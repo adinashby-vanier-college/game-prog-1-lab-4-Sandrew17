@@ -23,6 +23,11 @@ public class Lobster extends Actor
     public void act()
     {
         moveAround();
+        wormtoLobster();
+        eat();
+        if (isGameOver()) {
+            transitionToGameOverWorld();
+        }
     }
 
     /**
@@ -36,6 +41,56 @@ public class Lobster extends Actor
         }
         if (isAtEdge()) {
             turn(180);
+        }
+    }
+
+    /**
+     * 
+     */
+    public void eat()
+    {
+        Actor crab = getOneIntersectingObject(Crab.class);
+        if (crab != null) {
+            World world = getWorld();
+            world.removeObject(crab);
+            Greenfoot.playSound("GTA V Death - Sound Effect.wav");
+        }
+    }
+
+    /**
+     * 
+     */
+    public boolean isGameOver()
+    {
+        World world = getWorld();
+        if (world.getObjects(Crab.class).isEmpty()) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * 
+     */
+    public void transitionToGameOverWorld()
+    {
+        World gameOverWorld =  new GameOverWorld();
+        Greenfoot.setWorld(gameOverWorld);
+    }
+
+    /**
+     * 
+     */
+    public void wormtoLobster()
+    {
+        Actor worm = getOneIntersectingObject(Worm.class);
+        if (worm != null) {
+            World world = getWorld();
+            world.removeObject(worm);
+            Greenfoot.playSound("eating.wav");
+            world.addObject( new Lobster(), getX(), getY());
         }
     }
 }
